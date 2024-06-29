@@ -60,7 +60,7 @@ end
 
 always @(*) begin
     case (currentState)
-		READ_INIT: nextState = READ;
+	READ_INIT: nextState = READ;
         READ: nextState = (cnt == 3'd6)? SORT_INIT : READ;
         SORT_INIT: nextState = SORT;
         SORT: nextState = (cnt == 3'd6)? CHK : SORT;
@@ -76,22 +76,22 @@ always @(posedge clk or posedge reset) begin
         left_x <= 10'd1023;
         left_y <= 0;
         sort_index <= 0;
-		vectorA_x <= 0;
-		vectorA_y <= 0;
-		vectorB_x <= 0;
-		vectorB_y <= 0;
-		chk_cnt <= 0;
-		inside_flag <= 0;
+	vectorA_x <= 0;
+	vectorA_y <= 0;
+	vectorB_x <= 0;
+	vectorB_y <= 0;
+	chk_cnt <= 0;
+	inside_flag <= 0;
     end
 
     else begin
         case (currentState)
-			READ_INIT: begin
+	    READ_INIT: begin
                 obj_x <= X;
                 obj_y <= Y;
-			end
+	    end
             READ: begin
-				cnt <= cnt + 3'd1;
+		cnt <= cnt + 3'd1;
                 
                 x_list[cnt] <= X;
                 y_list[cnt] <= Y;
@@ -102,7 +102,7 @@ always @(posedge clk or posedge reset) begin
                 end                
             end
             SORT_INIT: begin
-				cnt <= 0;
+		cnt <= 0;
                 for (i = 0; i < 7; i = i + 1) begin
                     sort_list[i] <= (y_list[i] < left_y)? ~x_list[i] + 11'd1 : x_list[i];
                 end
@@ -133,17 +133,17 @@ always @(posedge clk or posedge reset) begin
                     end
                 end
             end
-			CHK: begin
-				chk_cnt <= (chk_cnt == 6)? chk_cnt : chk_cnt + 3'd1;
-				vectorB_x <= x_list[chk_cnt] - obj_x;
-				vectorB_y <= y_list[chk_cnt] - obj_y;
-				vectorA_x <= (chk_cnt == 3'd6)? x_list[0] - x_list[chk_cnt] : x_list[chk_cnt + 1] - x_list[chk_cnt];
-				vectorA_y <= (chk_cnt == 3'd6)? y_list[0] - y_list[chk_cnt] : y_list[chk_cnt + 1] - y_list[chk_cnt];
-				cnt <= (chk_cnt > 1)? cnt + 3'd1 : cnt;
-				inside_flag <= inside_;
-			end
+	    CHK: begin 
+		chk_cnt <= (chk_cnt == 6)? chk_cnt : chk_cnt + 3'd1;
+		vectorB_x <= x_list[chk_cnt] - obj_x;
+		vectorB_y <= y_list[chk_cnt] - obj_y;
+		vectorA_x <= (chk_cnt == 3'd6)? x_list[0] - x_list[chk_cnt] : x_list[chk_cnt + 1] - x_list[chk_cnt];
+		vectorA_y <= (chk_cnt == 3'd6)? y_list[0] - y_list[chk_cnt] : y_list[chk_cnt + 1] - y_list[chk_cnt];
+		cnt <= (chk_cnt > 1)? cnt + 3'd1 : cnt;
+		inside_flag <= inside_;
+	    end
             FINISH: begin
-				cnt <= 0;
+		cnt <= 0;
                 left_x <= 10'd1023;
                 chk_cnt <= 0;
             end  
@@ -210,16 +210,16 @@ assign stored9 = mul_b_reg[9]? mul_a_reg[9:0] : 10'b0;
 
 always @(posedge clk or posedge reset) begin
 	if (reset) begin		
-		msb<=0;
-		add<=0;	
+	    msb<=0;
+	    add<=0;	
 	end
 
 	else begin
-		msb <= a[10] ^ b[10];
+	    msb <= a[10] ^ b[10];
 		
-		add <= ((({stored1, 1'b0} + stored0) + {({stored3, 1'b0} + stored2), 2'b0}) + 
-               {(({stored5, 1'b0} + stored4) + {({stored7, 1'b0} + stored6),2'b0}), 4'b0}) + 
-               {({stored9, 1'b0} + stored8), 8'b0};
+	    add <= ((({stored1, 1'b0} + stored0) + {({stored3, 1'b0} + stored2), 2'b0}) + 
+                   {(({stored5, 1'b0} + stored4) + {({stored7, 1'b0} + stored6),2'b0}), 4'b0}) + 
+                   {({stored9, 1'b0} + stored8), 8'b0};
 	end
 end
 
